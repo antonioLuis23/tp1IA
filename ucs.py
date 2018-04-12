@@ -3,6 +3,7 @@ import time
 import timeit
 import numpy as np
 from icecream import ic
+import heapq
 
 
 class Node:
@@ -10,7 +11,8 @@ class Node:
     parent = None
     action = ""
     path_cost = 0
-
+    def __lt__(self, other):
+        return self.path_cost < other.path_cost
 
 class Ids:
     def __init__(self):
@@ -46,11 +48,11 @@ class Ids:
         return False
 
     def ids_pilha(self, node, depth):
-        stack = []
-        stack.append(node)
-        while len(stack)>0:
-            ic(len(stack))
-            node =stack.pop()
+        heap = []
+        heapq.heappush(heap,node)
+        while len(heap)>0:
+            ic(len(heap))
+            node =heapq.heappop(heap)
             self.visitados.add(node.state)
             if (self.ehObjetivo(node)):
                 return node
@@ -64,7 +66,7 @@ class Ids:
                             no.action = action
                             no.parent = node
                             no.path_cost= node.path_cost+afterState[2]
-                            stack.append(no)
+                            heapq.heappush(heap,no)
         return False
             #if(afterState):
 
